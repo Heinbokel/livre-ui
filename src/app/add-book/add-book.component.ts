@@ -17,11 +17,12 @@ import { GenresService } from '../genre.service';
 import { Genre } from '../models/genre';
 import { BooksService } from '../books.service';
 import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-add-book',
   standalone: true,
-  imports: [MatSnackBarModule, DatePipe, CommonModule, MatOptionModule, AsyncPipe, MatAutocompleteModule, MatIconModule, MatFormFieldModule, MatDatepickerModule, MatInputModule, FormsModule, ReactiveFormsModule, MatButtonModule, MatCardModule],
+  imports: [MatProgressSpinnerModule, MatSnackBarModule, DatePipe, CommonModule, MatOptionModule, AsyncPipe, MatAutocompleteModule, MatIconModule, MatFormFieldModule, MatDatepickerModule, MatInputModule, FormsModule, ReactiveFormsModule, MatButtonModule, MatCardModule],
   templateUrl: './add-book.component.html',
   styleUrl: './add-book.component.css'
 })
