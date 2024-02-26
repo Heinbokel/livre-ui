@@ -1,0 +1,79 @@
+<mat-card>
+    <mat-card-header>
+        <h1>Add Book</h1>
+    </mat-card-header>
+    <mat-card-content>
+        <form [formGroup]="form">
+
+            <div class="form-row">
+                <mat-form-field matFormFieldControl="title" class="form-field">
+                    <mat-label>Title</mat-label>
+                    <input matInput placeholder="Title" formControlName="title">
+                    @if (!form.controls['title'].valid) {
+                    <mat-error>Please enter a title between 1 and 150 characters.</mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field matFormFieldControl="isbn" class="form-field">
+                    <mat-label>ISBN</mat-label>
+                    <input matInput placeholder="ISBN" formControlName="isbn">
+                    @if (!form.controls['isbn'].valid) {
+                    <mat-error>Please enter a valid ISBN of 10 or 13 characters.</mat-error>
+                    }
+                </mat-form-field>
+            </div>
+
+            <mat-form-field matFormFieldControl="synopsis" class="full-width padding-bottom-16">
+                <mat-label>Synopsis</mat-label>
+                <textarea matInput rows="5" placeholder="Enter the book's synopsis..."
+                    formControlName="synopsis"></textarea>
+                @if (!form.controls['synopsis'].valid) {
+                <mat-error>Please enter a valid Synopsis between 10 and 255 characters.</mat-error>
+                }
+            </mat-form-field>
+
+            <mat-form-field class="full-width padding-bottom-16">
+                <input matInput placeholder="Publication Date" [matDatepicker]="picker"
+                    formControlName="publicationDate">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+                @if (!form.controls['publicationDate'].valid) {
+                <mat-error>Please enter a valid publication date.</mat-error>
+                }
+            </mat-form-field>
+
+            <mat-form-field class="full-width">
+                <input type="text" placeholder="Authors" matInput [formControl]="authorsControl"
+                    [matAutocomplete]="auto">
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
+                    (optionSelected)="onAuthorSelect($event.option.value)">
+                    <mat-option *ngFor="let author of filteredAuthors | async" [value]="author">
+                        {{author.firstName}} <span *ngIf="author.middleName != null">{{author.middleName}}</span>
+                        {{author.lastName}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+            <p *ngFor="let author of selectedAuthors">{{author.firstName}} {{author.lastName}} <mat-icon
+                    (click)="removeAuthor(author) " aria-hidden="false" aria-label="Book icon" fontIcon="delete"
+                    color="warn"></mat-icon></p>
+
+            <mat-form-field class="full-width">
+                <input type="text" placeholder="Genres" matInput [formControl]="genresControl"
+                    [matAutocomplete]="autoGenre">
+                <mat-autocomplete #autoGenre="matAutocomplete" [displayWith]="displayGenreFn"
+                    (optionSelected)="onGenreSelect($event.option.value)">
+                    <mat-option *ngFor="let genre of filteredGenres | async" [value]="genre">
+                        {{genre.name}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+            <p *ngFor="let genre of selectedGenres">{{genre.name}}<mat-icon
+                    (click)="removeGenre(genre) " aria-hidden="false" aria-label="Book icon" fontIcon="delete"
+                    color="warn"></mat-icon></p>
+
+
+            <button (click)="submitForm()" matRipple mat-raised-button color="primary" class="full-width"><mat-icon
+                    aria-hidden="false" aria-label="Book icon" fontIcon="add"></mat-icon>Add Book</button>
+        </form>
+    </mat-card-content>
+</mat-card>

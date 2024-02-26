@@ -1,0 +1,12 @@
+<div *ngIf="isLoading" class="centered-container">
+    <mat-spinner></mat-spinner>
+</div>
+
+<div *ngIf="!isLoading">
+    <mat-grid-list cols="3">
+        <mat-grid-tile *ngFor="let book of books">
+            <app-book-display [book]="book"></app-book-display>
+        </mat-grid-tile>
+    </mat-grid-list>
+</div>
+
