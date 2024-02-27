@@ -1,6 +1,6 @@
 <mat-card>
     <mat-card-header>
-        <h1>Add Book</h1>
+        <h1>{{bookToEdit ? 'Editing ' + bookToEdit.title : 'Add New Book'}}</h1>
     </mat-card-header>
     <mat-card-content>
         <form [formGroup]="form" class="padding-bottom-16">
@@ -73,7 +73,7 @@
 
 
             <button (click)="submitForm()" matRipple mat-raised-button color="primary" class="full-width"><mat-icon
-                    aria-hidden="false" aria-label="Book icon" fontIcon="add"></mat-icon>Add Book</button>
+                    aria-hidden="false" aria-label="Book icon" fontIcon="add"></mat-icon>Save</button>
         </form>
 
         <mat-spinner *ngIf="isLoading" class="center"></mat-spinner>

@@ -13,6 +13,8 @@ export class BooksService {
   private booksSubject: BehaviorSubject<Book[]> = new BehaviorSubject<Book[]>([]);
   private books: Book[] = [];
 
+  private updateTrigger: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
   constructor(private readonly _http: HttpClient) {
     this.RetrieveBooks().subscribe({
       next: (response) => {
@@ -47,6 +49,10 @@ export class BooksService {
     );
   }
 
+  public UpdateBook(bookCreateRequest: { Title: any; Synopsis: any; PublicationDate: any; ISBN: any; GenreIds: number[]; AuthorIds: number[]; }, bookId: number): Observable<any> {
+    return this._http.put(`${this.BASE_BOOK_URL}/${bookId}`, bookCreateRequest);
+  }
+
   public DeleteBook(bookId: number): Observable<any> {
     return this._http.delete(`${this.BASE_BOOK_URL}/${bookId}`).pipe(
       tap((response) => {
@@ -55,5 +61,13 @@ export class BooksService {
         this.booksSubject.next(this.books);
       })
     );
+  }
+
+  public ShouldUpdateBooks(): void {
+    this.updateTrigger.next(true);
+  }
+
+  public GetUpdateTrigger(): Observable<boolean> {
+    return this.updateTrigger.asObservable();
   }
 }

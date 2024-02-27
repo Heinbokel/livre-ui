@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { BooksService } from '../books.service';
 import { Book } from '../models/book';
@@ -24,11 +24,16 @@ export class BooksListDisplayComponent implements OnInit {
 
   public books: Book[] = [];
 
-  constructor(private readonly _bookService: BooksService) {
+  constructor(private readonly _bookService: BooksService, private cdr: ChangeDetectorRef) {
 
   }
 
   ngOnInit(): void {
+    this.RetrieveBooks();
+  }
+
+
+  private RetrieveBooks() {
     this._bookService.GetBookSubject().subscribe({
       next: (books) => {
         this.books = books;
@@ -41,5 +46,4 @@ export class BooksListDisplayComponent implements OnInit {
       }
     });
   }
-
 }

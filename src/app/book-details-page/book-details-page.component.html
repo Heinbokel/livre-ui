@@ -5,7 +5,7 @@
 </ng-template>
 
 <ng-template #bookDetails>
-    <mat-card class="full-card full-width">
+    <mat-card class="full-card full-width padding-bottom-16">
         <mat-card-header>
             <div mat-card-avatar><mat-icon aria-hidden="false" aria-label="Book icon" fontIcon="book"></mat-icon>
             </div>
@@ -41,10 +41,15 @@
         <mat-card-actions>
             <button (click)="NavigateToHome()" mat-button color="primary"><mat-icon aria-hidden="false"
                     aria-label="Book icon" fontIcon="fast_rewind"></mat-icon>GO BACK</button>
-            <button mat-button color="primary"><mat-icon aria-hidden="false" aria-label="Book icon"
+            <button (click)="ToggleEditMode()" mat-button color="primary"><mat-icon aria-hidden="false" aria-label="Book icon"
                     fontIcon="edit"></mat-icon>EDIT</button>
             <button (click)="DeleteBook()" mat-button color="warn"><mat-icon aria-hidden="false" aria-label="Book icon"
                     fontIcon="delete"></mat-icon>DELETE</button>
         </mat-card-actions>
+        <ng-container *ngIf="editMode">
+            <app-add-book [bookToEdit]="book"></app-add-book>
+        </ng-container>
     </mat-card>
+
+    
 </ng-template>

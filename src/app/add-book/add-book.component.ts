@@ -1,5 +1,5 @@
 import { MatButtonModule } from '@angular/material/button';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatInputModule} from '@angular/material/input'
@@ -27,6 +27,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   styleUrl: './add-book.component.css'
 })
 export class AddBookComponent implements OnInit {
+  @Input() bookToEdit: Book;
 
   public form: FormGroup;
 
@@ -42,7 +43,8 @@ export class AddBookComponent implements OnInit {
   isLoading: boolean;
 
   constructor(private readonly _authorService: AuthorsService, private readonly _genreService: GenresService,
-     private readonly _bookService: BooksService, private datePipe: DatePipe, private _snackBar: MatSnackBar) {
+     private readonly _bookService: BooksService, private datePipe: DatePipe, private _snackBar: MatSnackBar,
+     private cdr: ChangeDetectorRef) {
 
   }
 
@@ -65,13 +67,16 @@ export class AddBookComponent implements OnInit {
     });
 
     this.form = new FormGroup({
-      title: new FormControl('', [Validators.minLength(1), Validators.maxLength(150), Validators.required]),
-      isbn: new FormControl('', [Validators.minLength(10), Validators.maxLength(13), Validators.required]),
-      synopsis: new FormControl('', [Validators.minLength(10), Validators.maxLength(255), Validators.required]),
-      publicationDate: new FormControl('', Validators.required),
+      title: new FormControl(this.bookToEdit ? this.bookToEdit.title : '', [Validators.minLength(1), Validators.maxLength(150), Validators.required]),
+      isbn: new FormControl(this.bookToEdit ? this.bookToEdit.isbn : '', [Validators.minLength(10), Validators.maxLength(10), Validators.required]),
+      synopsis: new FormControl(this.bookToEdit ? this.bookToEdit.synopsis : '', [Validators.minLength(10), Validators.maxLength(255), Validators.required]),
+      publicationDate: new FormControl(this.bookToEdit ? this.bookToEdit.publicationDate : '', Validators.required),
       authors: new FormControl(),
       genres: new FormControl()
     });
+
+    this.selectedAuthors = this.bookToEdit ? this.bookToEdit.authors : [];
+    this.selectedGenres = this.bookToEdit ? this.bookToEdit.genres : [];
 
     this.filteredAuthors = this.authorsControl.valueChanges.pipe(
       startWith(''),
@@ -132,15 +137,35 @@ export class AddBookComponent implements OnInit {
       AuthorIds: this.selectedAuthors.map(x => x.id)
     };
 
-    this._bookService.CreateBook(bookCreateRequest).subscribe({
-      next: (response) => {
-        this.isLoading = false;
-        this._snackBar.open(`Book ${response.title} was successfully created!`, 'Great!');
-      }, error: (error) => {
-        this.isLoading = false;
-        this._snackBar.open("Could not create book. Response code " + error.error.status + ": " + error.error.title, "Close");
-      }
-    });
+    if (!this.bookToEdit) {
+      this._bookService.CreateBook(bookCreateRequest).subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          this._snackBar.open(`Book ${response.title} was successfully created!`, 'Great!');
+        }, error: (error) => {
+          this.isLoading = false;
+          this._snackBar.open("Could not create book. Response code " + error.error.status + ": " + error.error.title, "Close");
+        }
+      });
+    } else {
+      this._bookService.UpdateBook(bookCreateRequest, this.bookToEdit.id).subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          this.bookToEdit.authors = this.selectedAuthors;
+          this.bookToEdit.genres = this.selectedGenres;
+          this.bookToEdit.title = bookCreateRequest.Title;
+          this.bookToEdit.isbn = bookCreateRequest.ISBN;
+          this.bookToEdit.synopsis = bookCreateRequest.Synopsis;
+          this.bookToEdit.publicationDate = formattedDate ?? this.bookToEdit.publicationDate;
+          this._bookService.ShouldUpdateBooks();
+          this.cdr.detectChanges();
+          this._snackBar.open(`Book ${this.form.controls['title'].value} was successfully updated!`, 'Great!');
+        }, error: (error) => {
+          this.isLoading = false;
+          this._snackBar.open("Could not update book. Response code " + error.error.status + ": " + error.error.title, "Close");
+        }
+      });
+    }
 
   }
 

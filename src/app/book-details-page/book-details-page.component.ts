@@ -9,17 +9,18 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { AddBookComponent } from "../add-book/add-book.component";
 
 @Component({
-  selector: 'app-book-details-page',
-  standalone: true,
-  imports: [MatGridListModule, CommonModule, MatSnackBarModule, MatCardModule, MatIconModule, DatePipe, MatProgressSpinnerModule, MatButtonModule],
-  templateUrl: './book-details-page.component.html',
-  styleUrl: './book-details-page.component.css'
+    selector: 'app-book-details-page',
+    standalone: true,
+    templateUrl: './book-details-page.component.html',
+    styleUrl: './book-details-page.component.css',
+    imports: [MatGridListModule, CommonModule, MatSnackBarModule, MatCardModule, MatIconModule, DatePipe, MatProgressSpinnerModule, MatButtonModule, AddBookComponent]
 })
 export class BookDetailsPageComponent implements OnInit {
     book: Book;
-
+    editMode: boolean = false;
     isLoading: boolean;
 
     constructor(private readonly _bookService: BooksService, private readonly _activatedRoute: ActivatedRoute, private _snackBar: MatSnackBar, private _router: Router){}
@@ -60,5 +61,9 @@ export class BookDetailsPageComponent implements OnInit {
           this.isLoading = false;
         }
       });
+    }
+
+    ToggleEditMode() {
+      this.editMode = !this.editMode;
     }
 }
