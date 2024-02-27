@@ -13,10 +13,10 @@ export class BooksService {
   private booksSubject: BehaviorSubject<Book[]> = new BehaviorSubject<Book[]>([]);
   private books: Book[] = [];
 
-  constructor(private readonly _http: HttpClient) { 
+  constructor(private readonly _http: HttpClient) {
     this.RetrieveBooks().subscribe({
       next: (response) => {
-        
+
       }
     });
   }
@@ -34,10 +34,24 @@ export class BooksService {
     );
   }
 
+  RetrieveBookByBookId(bookId: string | null): Observable<Book> {
+    return this._http.get<Book>(`${this.BASE_BOOK_URL}/${bookId}`);
+  }
+
   public CreateBook(bookCreateRequest: { Title: any; Synopsis: any; PublicationDate: any; ISBN: any; GenreIds: number[]; AuthorIds: number[]; }): Observable<Book> {
     return this._http.post<Book>(this.BASE_BOOK_URL, bookCreateRequest).pipe(
       tap((response) => {
         this.books.push(response);
+        this.booksSubject.next(this.books);
+      })
+    );
+  }
+
+  public DeleteBook(bookId: number): Observable<any> {
+    return this._http.delete(`${this.BASE_BOOK_URL}/${bookId}`).pipe(
+      tap((response) => {
+        const index = this.books.findIndex(book => book.id === bookId);
+        this.books.splice(index, 1);
         this.booksSubject.next(this.books);
       })
     );

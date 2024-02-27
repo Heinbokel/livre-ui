@@ -13,5 +13,6 @@ import { AddBookComponent } from "../add-book/add-book.component";
     imports: [MatToolbarModule, MatIconModule, MatTabsModule, BooksListDisplayComponent, AddBookComponent]
 })
 export class DashboardComponent {
+    selectedTab: number = 0;
 
 }

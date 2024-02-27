@@ -1,6 +1,6 @@
 <mat-card class="example-card">
     <mat-card-header>
-      <div mat-card-avatar><mat-icon aria-hidden="false" aria-label="Book icon" fontIcon="book"></mat-icon>
+      <div mat-card-avatar><mat-icon aria-hidden="false" aria-label="Book icon" fontIcon="book" color="{{isRead ? 'accent': ''}}"></mat-icon>
       </div>
       <mat-card-title>{{book.title}}</mat-card-title>
       <mat-card-subtitle>{{book.publicationDate | date: 'longDate'}}</mat-card-subtitle>
@@ -11,7 +11,7 @@
       </p>
     </mat-card-content>
     <mat-card-actions>
-      <button mat-button color="primary">VIEW DETAILS</button>
-      <button mat-button color="primary">READ IT</button>
+      <button mat-button color="primary" (click)="NavigateToBookDetailsPage()">VIEW DETAILS</button>
+      <button mat-button color="primary" (click)="ToggleIsRead()">READ IT</button>
     </mat-card-actions>
   </mat-card>
